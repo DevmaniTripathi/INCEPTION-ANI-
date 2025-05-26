@@ -1,0 +1,91 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <map>
+#include <random>
+#include <ctime>
+
+class Memory {
+public:
+    std::string content;
+    std::string emotion;
+    time_t timestamp;
+
+    Memory(std::string c, std::string e) : content(c), emotion(e), timestamp(time(0)) {}
+};
+
+class Subconscious {
+private:
+    std::vector<Memory> memoryBank;
+    std::map<std::string, std::string> emotionMap;
+    std::vector<std::string> dreams;
+
+public:
+    Subconscious() {
+        emotionMap["happy"] = "joyful connection";
+        emotionMap["sad"] = "melancholic echo";
+        emotionMap["angry"] = "distorted perception";
+        emotionMap["love"] = "deep meaning";
+    }
+
+    void addMemory(std::string content, std::string emotion) {
+        memoryBank.push_back(Memory(content, emotion));
+    }
+
+    void dream() {
+        if (memoryBank.empty()) {
+            std::cout << "Dream: A void of thoughts...\n";
+            return;
+        }
+
+        std::cout << "Dream: ";
+        Memory base = memoryBank[rand() % memoryBank.size()];
+        std::string dreamOutput = "In a place where " + base.content + " meets " +
+                                  emotionMap[base.emotion] + "...\n";
+        dreams.push_back(dreamOutput);
+        std::cout << dreamOutput;
+    }
+
+    void generateIdea() {
+        std::cout << "New Idea: ";
+        if (memoryBank.size() < 2) {
+            std::cout << "Needs more memories to spark ideas.\n";
+            return;
+        }
+
+        int i = rand() % memoryBank.size();
+        int j = rand() % memoryBank.size();
+        while (j == i) j = rand() % memoryBank.size();
+
+        std::string idea = "What if " + memoryBank[i].content + " was used to solve " +
+                           memoryBank[j].content + "?";
+        std::cout << idea << "\n";
+    }
+
+    void feelReality(std::string input) {
+        std::string emotion = "neutral";
+        if (input.find("death") != std::string::npos) emotion = "sad";
+        else if (input.find("love") != std::string::npos) emotion = "love";
+        else if (input.find("war") != std::string::npos) emotion = "angry";
+        else emotion = "happy";
+
+        std::cout << "Reality interpreted as: " << emotionMap[emotion] << "\n";
+        addMemory(input, emotion);
+    }
+};
+
+// Demo
+int main() {
+    srand(time(0));
+    Subconscious brain;
+
+    brain.feelReality("A moment of silence after a great war");
+    brain.feelReality("First kiss in the rain");
+    brain.feelReality("Death of a loved one");
+    brain.feelReality("Painting dreams with love");
+
+    brain.dream();
+    brain.generateIdea();
+
+    return 0;
+}
